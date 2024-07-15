@@ -1,50 +1,40 @@
-import { Request, Response } from 'express';
+// import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { StudentServices } from './student.services';
+import catchAsync from '../../app/utils/catchAsync';
 
-const createStudent = async (req: Request, res: Response) => {
-  try {
-    const { student: StudentData } = req.body;
-    const result = await StudentServices.createStudentDB(StudentData);
 
-    res.status(200).json({
-      success: true,
-      message: 'Student created successfully',
-      data: result,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
 
-const getStudents = async (req: Request, res: Response) => {
-  try {
-    const result = await StudentServices.getStudentsFromDb();
-    res.status(200).json({
-      success: true,
-      message: 'Student created successfully',
-      data: result,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
+const getStudents = catchAsync(async (req, res) => {
+  const result = await StudentServices.getStudentsFromDb();
+  res.status(200).json({
+    success: true,
+    message: 'Student fatcehd  successfully',
+    data: result,
+  });
+});
 
-const getSingleStudent = async (req: Request, res: Response) => {
-  try {
-    const { studentId } = req.params;
-    const result = await StudentServices.getSingleStudentFromDb(studentId);
-    res.status(200).json({
-      success: true,
-      message: 'Student Get successfully',
-      data: result,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
+const getSingleStudent = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const result = await StudentServices.getSingleStudentFromDb(studentId);
+  res.status(200).json({
+    success: true,
+    message: 'Single Student Get successfully',
+    data: result,
+  });
+});
+
+const deleteStudnet = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const result = await StudentServices.deleteStudnetFromDb(studentId);
+  res.status(200).json({
+    success: true,
+    message: 'Student Delete successfully',
+    data: result,
+  });
+});
 
 export const StudentController = {
-  createStudent,
   getStudents,
   getSingleStudent,
+  deleteStudnet
 };
