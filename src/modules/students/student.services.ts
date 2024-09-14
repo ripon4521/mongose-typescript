@@ -5,8 +5,17 @@ import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const getStudentsFromDb = async () => {
-  const result = await Student.find()
+const getStudentsFromDb = async (query: Record<string, unknown>) => {
+  let searchTerm = '';
+  if (query.searchTerm) {
+    searchTerm = query.searchTerm as string;
+  }
+
+  const result = await Student.find({
+    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -36,7 +45,6 @@ const updateStudentFromDb = async (id: string, payload: Partial<TStudent>) => {
   if (name && Object.keys(name).length) {
     for (const [key, value] of Object.entries(name)) {
       modifiedUpdateData[`name.${key}`] = value;
-     
     }
   }
 

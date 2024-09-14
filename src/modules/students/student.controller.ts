@@ -1,11 +1,13 @@
 // import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { StudentServices } from './student.services';
 import catchAsync from '../../app/utils/catchAsync';
+import { RequestHandler } from 'express';
 
 
 
-const getStudents = catchAsync(async (req, res) => {
-  const result = await StudentServices.getStudentsFromDb();
+const getStudents : RequestHandler = catchAsync(async (req, res) => {
+  // console.log(req.query)
+  const result = await StudentServices.getStudentsFromDb(req.query);
   res.status(200).json({
     success: true,
     message: 'Student fatcehd  successfully',
