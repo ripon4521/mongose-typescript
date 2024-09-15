@@ -6,6 +6,7 @@ import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
 const getStudentsFromDb = async (query: Record<string, unknown>) => {
+  console.log('base query: ', query);
   let searchTerm = '';
   if (query.searchTerm) {
     searchTerm = query.searchTerm as string;
@@ -19,7 +20,7 @@ const getStudentsFromDb = async (query: Record<string, unknown>) => {
     })),
   });
 
-  const excludeFields = ['searchTerm', 'sort', 'limit'];
+  const excludeFields = ['searchTerm', 'sort', 'limit', 'page','fields'];
   excludeFields.forEach((field) => delete queryObject[field]);
 
   const fiterquery = searchQuery
@@ -37,13 +38,42 @@ const getStudentsFromDb = async (query: Record<string, unknown>) => {
   }
   const sortQuery = fiterquery.sort(sort);
 
-  let limit = 10;
-  if (query.limit) {
-    limit = parseInt(query.limit as string);
-  }
-  const limitQuery = await sortQuery.limit(limit);
+  let page = 1;
+  let limit = 1;
+  let skip = 0;
 
-  return limitQuery;
+  if (query.limit) {
+    limit = Number(query.limit);
+  }
+
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
+
+  const paginetQuery = sortQuery.skip(skip);
+
+  const limitQuery =  paginetQuery.limit(limit);
+
+  // Field Filter Query
+  let fields  = '-_v';
+  if (query.fields) {
+    fields = (query.fields as string).split(',').join(' ');
+
+    console.log({fields})
+  }
+
+
+  const fieldsQuery = await limitQuery.select(fields);
+
+
+
+
+
+
+
+
+  return fieldsQuery;
 };
 
 const getSingleStudentFromDb = async (id: string) => {
