@@ -11,17 +11,39 @@ const getStudentsFromDb = async (query: Record<string, unknown>) => {
     searchTerm = query.searchTerm as string;
   }
 
-  const result = await Student.find({
+  const queryObject = { ...query };
+
+  const searchQuery = Student.find({
     $or: ['email', 'name.firstName', 'presentAddress'].map((field) => ({
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
-  })
+  });
+
+  const excludeFields = ['searchTerm', 'sort', 'limit'];
+  excludeFields.forEach((field) => delete queryObject[field]);
+
+  const fiterquery = searchQuery
+    .find(queryObject)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
       populate: { path: 'academicFaculty' },
     });
-  return result;
+
+  let sort = '-createdAt';
+
+  if (query.sort) {
+    sort = query.sort as string;
+  }
+  const sortQuery = fiterquery.sort(sort);
+
+  let limit = 10;
+  if (query.limit) {
+    limit = parseInt(query.limit as string);
+  }
+  const limitQuery = await sortQuery.limit(limit);
+
+  return limitQuery;
 };
 
 const getSingleStudentFromDb = async (id: string) => {
