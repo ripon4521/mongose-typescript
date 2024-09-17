@@ -39,3 +39,22 @@ export const generatedId = async (payload: TAcademicSemester) => {
   return incremenentId;
   // console.log(payload)
 };
+
+
+
+
+// find last faculty id
+export const findLastFacultyId = async () => {
+};
+
+// genereted faculty id 
+export const generateFacultyId = async () => {
+};
+
+
+// Admin ID
+export const findLastAdminId = async () => {
+};
+
+export const generateAdminId = async () => {
+};

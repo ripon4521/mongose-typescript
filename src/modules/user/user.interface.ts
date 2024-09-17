@@ -1,7 +1,7 @@
 
 export type Tuser = {
     id: string;
-    password: string;
+    password: string ;
     needsPasswordChange: boolean;
     role: "admin"| "student" | "faculty";
     status: "in-progress" | "blocked";
@@ -9,7 +9,7 @@ export type Tuser = {
 }
 
 export type NewUser = {
-    passward: string;
+    passward: string ;
     role : string;
     id : string;
 }
