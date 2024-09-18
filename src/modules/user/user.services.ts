@@ -6,12 +6,13 @@ import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { Student } from '../students/student.model';
 import { Tuser } from './user.interface';
 import { User } from './user.model';
-import { generatedId, generateFacultyId } from './user.utilis';
+import { generateAdminId, generatedId, generateFacultyId } from './user.utilis';
 import mongoose from 'mongoose';
 import { TStudent } from '../students/student.interface';
 import { Faculty } from '../Faculty/faculty.model';
 import { TFaculty } from '../Faculty/faculty.interface';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
+import { Admin } from '../Admin/admin.model';
 
 const createStudentDB = async (passward: string, payload: TStudent) => {
   const userData: Partial<Tuser> = {};
@@ -120,7 +121,7 @@ const createFacultyIntoDB = async (password: string , payload: TFaculty) => {
 
 const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   // create a user object
-  const userData: Partial<TUser> = {};
+  const userData: Partial<Tuser> = {};
 
   //if password is not given , use deafult password
   userData.password = password || (config.default_password as string);
@@ -157,6 +158,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     await session.endSession();
 
     return newAdmin;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
@@ -170,4 +172,5 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
 export const UserService = {
   createStudentDB,
   createFacultyIntoDB,
+  createAdminIntoDB
 };

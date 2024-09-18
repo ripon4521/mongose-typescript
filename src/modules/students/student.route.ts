@@ -4,16 +4,18 @@ import validateRequest from '../../app/middleware/validateRequest';
 import { updateStudentValidationSchema } from './student.validation';
 const router = express.Router();
 
-// router.post('/create-student', StudentController.createStudent); 
+// router.post('/create-student', StudentController.createStudent);
 
 router.get('/', StudentController.getStudents);
 
-router.get('/:studentId', StudentController.getSingleStudent);
+router.get('/:id', StudentController.getSingleStudent);
 
-router.patch('/:studentId',
-    validateRequest(updateStudentValidationSchema),
-StudentController.UpdateStudnet);
+router.patch(
+  '/:id',
+  validateRequest(updateStudentValidationSchema),
+  StudentController.UpdateStudnet,
+);
 
-router.delete('/:studentId', StudentController.deleteStudnet);
+router.delete('/:id', StudentController.deleteStudnet);
 
 export const StudentRoutes = router;
